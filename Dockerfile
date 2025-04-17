@@ -14,6 +14,8 @@ WORKDIR /var/www
 # Copia los archivos del proyecto
 COPY . .
 
+COPY .env.staging .env
+
 # Instala dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
 

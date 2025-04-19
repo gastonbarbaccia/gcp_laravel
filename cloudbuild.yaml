@@ -10,9 +10,15 @@ steps:
     args: [
       'run', 'deploy', 'laravel-service',
       '--image', 'gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA',
-      '--region', 'us-east4', # ajustá tu región
+      '--region', 'us-east4',
       '--platform', 'managed',
-      '--allow-unauthenticated'
+      '--allow-unauthenticated',
+
+      # Montar secreto llamado "laravel-env" como archivo
+      '--set-secrets=laravel_env=laravel-env:latest',
+
+      # Ruta donde se montará el archivo secreto (dentro del contenedor)
+      '--execution-environment=gen2',  # necesario para usar secretos
     ]
 
 images:

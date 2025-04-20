@@ -1,16 +1,15 @@
 #!/bin/sh
 
-# Copiamos el archivo del secreto montado
+set -e
 
-echo "Contenido de /secrets:"
-ls -la /secrets
+APP_DIR="/var/www"
 
-# Copiamos el archivo del secreto montado
+# Copiar el secreto a .env
 if [ -f /secrets/laravel_env ]; then
-  echo "Secreto encontrado, copiando a .env"
-  cp /secrets/laravel_env /var/www/.env
+  echo "[entrypoint] Copiando secreto laravel_env a $APP_DIR/.env"
+  cp /secrets/laravel_env "$APP_DIR/.env"
 else
-  echo "Secreto NO encontrado en /secrets/laravel_env"
+  echo "[entrypoint] No se encontró el archivo /secrets/laravel_env"
 fi
 
 # Ejecutamos el servidor embebido de Laravel

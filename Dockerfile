@@ -14,6 +14,9 @@ WORKDIR /var/www
 # Copia la aplicación al contenedor
 COPY . .
 
+# Copia el archivo de configuración
+COPY docker-entrypoint.sh /usr/local/bin/
+
 # Copia el archivo de configuración de PHP
 RUN chmod +x docker-entrypoint.sh
 

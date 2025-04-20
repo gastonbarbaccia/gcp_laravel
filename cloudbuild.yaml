@@ -12,14 +12,8 @@ steps:
       '--image', 'gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA',
       '--region', 'us-east4',
       '--platform', 'managed',
-      '--allow-unauthenticated',
-
-      # Este formato monta el secreto como archivo en /secrets/laravel_env
-      '--set-secrets=laravel_env=laravel-env:latest:file',
-
-      # Ruta donde se montará el archivo secreto (dentro del contenedor)
-      '--execution-environment=gen2'  # necesario para usar secretos
-    ]
+      '--allow-unauthenticated'
+      ]
 
 images:
   - gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA

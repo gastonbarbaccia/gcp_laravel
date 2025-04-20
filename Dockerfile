@@ -11,14 +11,10 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 # Crea y configura directorios
 WORKDIR /var/www
 
-# Copia la aplicación al contenedor
+# Copia los archivos del proyecto
 COPY . .
 
-# Copia el archivo de configuración
-COPY docker-entrypoint.sh /usr/local/bin/
-
-# Copia el archivo de configuración de PHP
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY .env.staging .env
 
 # Instala dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
@@ -30,4 +26,4 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 EXPOSE 8080
 
 # Comando para correr Laravel con servidor embebido
-ENTRYPOINT ["docker-entrypoint.sh"]
+CMD php -S 0.0.0.0:8080 -t public

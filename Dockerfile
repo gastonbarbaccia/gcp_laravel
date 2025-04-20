@@ -18,7 +18,7 @@ COPY . .
 COPY docker-entrypoint.sh /usr/local/bin/
 
 # Copia el archivo de configuración de PHP
-RUN chmod +x docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Instala dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader

@@ -1,19 +1,37 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA', '.']
+  # Step 1: Definir el nombre del servicio según la rama
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'set-service-name'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [[ "$BRANCH_NAME" == "main" ]]; then
+          echo "laravel-prod" > /workspace/service_name.txt
+        else
+          echo "laravel-staging" > /workspace/service_name.txt
+        fi
 
+  # Step 2: Build imagen
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA']
+    args: ['build', '-t', 'gcr.io/devcode-457115/laravel_app:$BRANCH_NAME-$SHORT_SHA', '.']
 
+  # Step 3: Push imagen
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/devcode-457115/laravel_app:$BRANCH_NAME-$SHORT_SHA']
+
+  # Step 4: Deploy a Cloud Run con nombre dinámico
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: [
-      'run', 'deploy', 'laravel-service',
-      '--image', 'gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA',
-      '--region', 'us-east4',
-      '--platform', 'managed',
-      '--allow-unauthenticated'
-      ]
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        SERVICE_NAME=$(cat /workspace/service_name.txt)
+        gcloud run deploy $SERVICE_NAME \
+          --image gcr.io/devcode-457115/laravel_app:$BRANCH_NAME-$SHORT_SHA \
+          --region us-east4 \
+          --platform managed \
+          --allow-unauthenticated
 
 images:
-  - gcr.io/devcode-457115/laravel_app:staging-$SHORT_SHA
+  - gcr.io/devcode-457115/laravel_app:$BRANCH_NAME-$SHORT_SHA

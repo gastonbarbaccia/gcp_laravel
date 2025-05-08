@@ -17,14 +17,14 @@ steps:
     args:
       - 'build'
       - '-t'
-      - '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/laravel_app:$BRANCH_NAME-$SHORT_SHA'
+      - 'us-east4-docker.pkg.dev/devcode-457115/cloud-run-source-deploy/laravel_app:$BRANCH_NAME-$SHORT_SHA'
       - '.'
 
   # Step 3: Push de la imagen al Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/laravel_app:$BRANCH_NAME-$SHORT_SHA'
+      - 'us-east4-docker.pkg.dev/devcode-457115/cloud-run-source-deploy/laravel_app:$BRANCH_NAME-$SHORT_SHA'
 
   # Step 4: Despliegue en Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -34,13 +34,13 @@ steps:
       - |
         SERVICE_NAME=$(cat /workspace/service_name.txt)
         gcloud run deploy $SERVICE_NAME \
-          --image ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/laravel_app:$BRANCH_NAME-$SHORT_SHA \
-          --region ${_DEPLOY_REGION} \
-          --platform ${_PLATFORM} \
+          --image us-east4-docker.pkg.dev/devcode-457115/cloud-run-source-deploy/laravel_app:$BRANCH_NAME-$SHORT_SHA \
+          --region us-east4 \
+          --platform managed \
           --allow-unauthenticated
 
 images:
-  - gcr.io/devcode-457115/laravel_app:$BRANCH_NAME-$SHORT_SHA
+  - 'us-east4-docker.pkg.dev/devcode-457115/cloud-run-source-deploy/laravel_app:$BRANCH_NAME-$SHORT_SHA'
 
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET

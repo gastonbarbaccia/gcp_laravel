@@ -40,7 +40,7 @@ steps:
           --allow-unauthenticated
 
 images:
-  - '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/laravel_app:$BRANCH_NAME-$SHORT_SHA'
+  - gcr.io/devcode-457115/laravel_app:$BRANCH_NAME-$SHORT_SHA
 
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
